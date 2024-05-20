@@ -12,7 +12,7 @@ const { sendMessage, emojiReactions, editMessage ,deleteMessage} = require("./co
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL
   },
 });
 connectToDB();
