@@ -6,7 +6,14 @@ http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 require("dotenv").config({ path: ".env.local" });
-app.use(cors());
+
+const corsOptions = {
+  origin: process.env.APP_HOSTNAME,
+  credentials: true
+}
+
+app.use(cors(corsOptions))
+
 const server = http.createServer(app);
 const { sendMessage, emojiReactions, editMessage ,deleteMessage} = require("./controllers");
 
@@ -16,6 +23,8 @@ const io = new Server(server, {
   },
 });
 connectToDB();
+
+app.get('/', (req, res) => res.status(200).send({ message: 'Welcome to Chat Microservice!.' }))
 app.use("/api/v1/chat", apiRouter);
 
 io.on("connection", (socket) => {
