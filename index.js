@@ -1,30 +1,40 @@
+require("dotenv").config({ path: ".env.local" });
 const express = require("express");
-const { connectToDB } = require("./db/db");
-const apiRouter = require("./routes");
 const app = express();
-http = require("http");
+const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
-require("dotenv").config({ path: ".env.local" });
+const { connectToDB } = require("./db/db");
+const apiRouter = require("./routes");
 
 const corsOptions = {
-  origin: process.env.APP_HOSTNAME,
-  credentials: true
-}
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+};
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
 const server = http.createServer(app);
-const { sendMessage, emojiReactions, editMessage ,deleteMessage} = require("./controllers");
+const {
+  sendMessage,
+  emojiReactions,
+  editMessage,
+  deleteMessage,
+} = require("./controllers");
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL
+    origin: process.env.CLIENT_URL,
+    credentials: true,
   },
 });
+
 connectToDB();
 
-app.get('/', (req, res) => res.status(200).send({ message: 'Welcome to Chat Microservice!.' }))
+app.get("/", (req, res) =>
+  res.status(200).send({ message: "Welcome to Chat Microservice!." })
+);
+
 app.use("/api/v1/chat", apiRouter);
 
 io.on("connection", (socket) => {
