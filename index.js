@@ -7,12 +7,8 @@ const { Server } = require("socket.io");
 const { connectToDB } = require("./db/db");
 const apiRouter = require("./routes");
 
-const corsOptions = {
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-};
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 const server = http.createServer(app);
 const {
@@ -25,7 +21,8 @@ const {
 const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL,
-    credentials: true,
+    methods: ["GET", "POST"],
+    credentials: true
   },
 });
 
